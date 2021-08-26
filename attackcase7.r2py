@@ -1,0 +1,38 @@
+# WRITE OPERATION
+# New File Operation
+
+# Clean up of existing file 1
+if "testfile1.txt.a" in listfiles():
+    removefile("testfile1.txt.a")
+if "testfile1.txt.b" in listfiles():
+    removefile("testfile1.txt.b")
+
+# Clean up of existing file 2
+if "testfile2.txt.a" in listfiles():
+    removefile("testfile2.txt.a")
+if "testfile2.txt.b" in listfiles():
+    removefile("testfile2.txt.b")
+
+
+
+try:
+    # Open File Function Call (1)
+    myfile1=ABopenfile("testfile1.txt",True)  #Create an AB file
+
+    # Open File Function Call (2)
+    myfile2=ABopenfile("testfile2.txt",True)  #Create an AB file
+
+    #Close the file (1)
+    myfile1.close()
+
+    #Close the file (2)
+    myfile2.close()
+
+except:
+    #Close the file (1)
+    myfile1.close()
+
+    #Close the file (2)
+    myfile2.close()
+
+    log("Doesn't Allow Multiple AB files to be created simultaneously.")
