@@ -7,7 +7,12 @@ Note:
     This security layer uses encasementlib.r2py, restrictions.default, repy.py and Python
     Also you need to give it an application to run.
     python repy.py restrictions.default encasementlib.r2py [security_layer].r2py [attack_program].r2py 
-    
+
+
+Courtney Battieste | cbb389
+CS-UY 3923
+Computer Security RePy Assignment
+
     """ 
 TYPE="type"
 ARGS="args"
@@ -28,63 +33,83 @@ class ABFile():
     self.Bfn = filename+'.b'
 
     # make the files and add 'SE' to the readat file...
+    try:            
+        #remove files to ensure they're empty
+        if self.Afn in listfiles():
+            removefile(self.Afn)
+        if self.Bfn in listfiles():
+            removefile(self.Bfn)            
     
-    self.Afile = openfile(self.Afn,create)
-    self.Bfile = openfile(self.Bfn,create)
+        #create new empty files
+        self.Afile = openfile(self.Afn,True)
+        self.Bfile = openfile(self.Bfn,True)
 
-    if create:
-        if self.Afile.readat(None, 0) == "":
+        if create:    
             self.Afile.writeat('SE',0)
 
+        else:
+            file = openfile(filename,False)
+            data = file.readat(None,0)
+            file.close()
+            
+            self.Afile.writeat(data,0)
 
+    except:
+        pass
 
 
   def writeat(self,data,offset):
-
     # Write the requested data to the B file using the sandbox's writeat call
-    if offset > -1:
+    try:
         self.Bfile.writeat(data,offset)
-    else:
-        self.Bfile.writeat(data,offset)
+        
+    except:
+        pass
 
 
 
 
   def readat(self,bytes,offset):
-
     # Read from the A file using the sandbox's readat...
-    return self.Afile.readat(bytes,offset)
-
+    try:
+        return self.Afile.readat(bytes,offset)
+        
+    except:
+        return ""
 
 
 
   def close(self):
+    try:
+        #check if valid
+        validA = False
+        checkA = self.Afile.readat(None, 0)
 
-    validA = False
-    checkA = self.Afile.readat(None, 0)
-
-    validB = False
-    checkB = self.Bfile.readat(None, 0)
-    
-    
-    if checkA[0] == 'S' and checkA[-1] == 'E':
-        validA = True
-
-    if checkB[0] == 'S' and checkB[-1] == 'E':
-        validB = True
-
-    if validA and validB:
-        self.Afile.writeat("", 0)
-        self.Afile.writeat(checkB, 0)
+        validB = False
+        checkB = self.Bfile.readat(None, 0)   
         
-    else:
-        self.Bfile.writeat(checkA, 0)
-        
-        
-    self.Afile.close()
-    self.Bfile.close()
+        if checkA and checkA[0] == 'S' and checkA[-1] == 'E':
+            validA = True
+        if checkB and checkB[0] == 'S' and checkB[-1] == 'E':
+            validB = True
 
-
+        if validA and validB:
+            #remove and create new to ensure proper overwrite
+            removefile(self.Afn)
+            self.Afile = openfile(self.Afn,True)
+            self.Afile.writeat(checkB, 0)
+            
+        else:
+            #remove and create new to ensure proper overwrite
+            removefile(self.Bfn)
+            self.Bfile = openfile(self.Bfn,True)
+            self.Bfile.writeat(checkA, 0)
+            
+        self.Afile.close()
+        self.Bfile.close()
+        
+    except:
+        pass
 
 
 def ABopenfile(filename, create):
