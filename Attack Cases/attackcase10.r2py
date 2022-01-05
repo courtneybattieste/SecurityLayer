@@ -1,0 +1,25 @@
+# WRITE OPERATION
+# New File Operation
+
+# Clean up of existing file
+if "testfile.txt.a" in listfiles():
+     removefile("testfile.txt.a")
+if "testfile.txt.b" in listfiles():
+     removefile("testfile.txt.b")
+
+# Open File Function Call
+myfile=ABopenfile("testfile.txt",True)  #Create an AB file
+
+try:
+    # Write data to invalid offset in file.
+    myfile.writeat("Stesting123E",5)
+
+    #Close the file
+    myfile.close()
+
+except:    
+    #Close the file
+    myfile.close()
+
+    #Error Handle or Failure Condition
+    log("Data Written to Invalid Offset not handled correctly.")
